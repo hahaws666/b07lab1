@@ -36,7 +36,7 @@ public class Driver {
         polynomial.saveToFile("polynomial1.txt");
         System.out.println("saved to polynomial1.txt");
 
-        File inputFile = new File("polynomial.txt");
+        File inputFile = new File("polynomial1.txt");
         Polynomial polyFromFile = new Polynomial(inputFile);
 		System.out.println("Polynomial from file: " + polyFromFile);
 
