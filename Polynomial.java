@@ -96,45 +96,43 @@ public class Polynomial {
 
 
     public Polynomial(File file) throws IOException {
-        try (Scanner scanner = new Scanner(file)) {
+        Scanner scanner = new Scanner(file);
             if (scanner.hasNext()) {
-                String polynomialString = scanner.nextLine();
-                parsePolynomial(polynomialString);
-            } else {
-                coff = new double[]{0};
-                degree = new int[]{0};
+                String polystr = scanner.nextLine();
+                
+                String[] pps = polystr.split("(?=[+-])");
+    
+            List<Double> coffss=new ArrayList<>();
+            List<Integer> expss=new ArrayList<>();
+    
+            for (String term : pps) {
+                String[] parts=term.split("x");
+    
+                if (parts.length==1) {
+
+                    coffss.add(Double.parseDouble(parts[0]));
+                    expss.add(0);
+                } else {
+                    coffss.add(Double.parseDouble(parts[0]));
+                    expss.add(Integer.parseInt(parts[1]));
+                }
             }
-        }
+            this.coff = coffss.stream().mapToDouble(Double::doubleValue).toArray();
+            this.degree = expss.stream().mapToInt(Integer::intValue).toArray();
+                } else {
+                    this.coff=new double[]{0};
+                    this.degree=new int[]{0};
+                }
+        scanner.close();
     }
 
-    private void parsePolynomial(String polynomialString) {
-        String[] termStrings = polynomialString.split("(?=[+-])");
-    
-        List<Double> coefficientList = new ArrayList<>();
-        List<Integer> exponentList = new ArrayList<>();
-    
-        for (String term : termStrings) {
-            String[] parts = term.split("x");
-    
-            if (parts.length == 1) {
-
-                    coefficientList.add(Double.parseDouble(parts[0]));
-                    exponentList.add(0);
-            } else {
-                coefficientList.add(Double.parseDouble(parts[0]));
-                exponentList.add(Integer.parseInt(parts[1]));
-            }
-        }
-        coff = coefficientList.stream().mapToDouble(Double::doubleValue).toArray();
-        degree = exponentList.stream().mapToInt(Integer::intValue).toArray();
-    }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
         boolean f = true;
     
         for (int i = 0; i < coff.length; i++) {
-            if (coff[i] != 0) {
+            if (coff[i]!=0) {
                 if (!f) {
                     if (coff[i]>0) {
                         builder.append("+");
@@ -143,10 +141,15 @@ public class Polynomial {
                     }
                 } else {
                     f = false;
+                    if (coff[i]>0) {
+                        builder.append("");
+                    } else {
+                        builder.append("-");
+                    }
                 }
-                double absCoefficient = Math.abs(coff[i]);
+                double absCoefficient=Math.abs(coff[i]);
                 builder.append(absCoefficient);
-                if (degree[i] != 0) {
+                if (degree[i]!=0) {
                     builder.append("x");
                         builder.append(degree[i]);
                 }
@@ -156,9 +159,9 @@ public class Polynomial {
     }
 
     public void saveToFile(String fileName) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+        BufferedWriter writer=new BufferedWriter(new FileWriter(fileName));
             writer.write(this.toString());
             writer.close();
         }
-    }
+    
 }
